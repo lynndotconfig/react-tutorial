@@ -1,27 +1,3 @@
-<!DOCTYPE html>
-<html>
-  <head>
-    <meta charset="utf-8">
-    <title>React Tutorial</title>
-    <!-- Not present in the tutorial. Just for basic styling. -->
-    <link rel="stylesheet" href="css/base.css" />
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/react/0.14.7/react.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/react/0.14.7/react-dom.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-core/5.6.15/browser.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.2.0/jquery.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/marked/0.3.5/marked.min.js"></script>
-  </head>
-  <body>
-    <div id="content"></div>
-    <!-- <script type="text/babel" src="scripts/example.js"></script> -->
-    <script type="text/babel">
-      // To get started with this tutorial running your own code, simply remove
-      // the script tag loading scripts/example.js and start writing code here.
-// var data = [
-//   {author: "Pete Hunt", text: "This is one comment"},
-//   {author: "Jordan Walke", text: "This is *another* comment"}
-// ];
-
 var CommentBox = React.createClass({
   loadCommentsFromServer: function(){
     $.ajax({
@@ -36,39 +12,20 @@ var CommentBox = React.createClass({
       }.bind(this),
     });
   },
-
-  handleCommitSubmit: function(comment){
-    //TODO: submit to the server and refresh the list
-    $.ajax({
-      url: this.props.url,
-      dataType: 'json',
-      type: 'POST',
-      data: comment,
-      success: function(data) {
-        this.setState({data: data});
-      }.bind(this),
-      error: function (xhr, status, err) {
-        console.error(this.props.url, status, err.toString());
-      }.bind(this)
-    });
-  },
-
   getInitialState: function() {
     return {data:[]};
   },
-
   componentDidMount: function(){
     this.loadCommentsFromServer();
     setInterval(this.loadCommentsFromServer, this.props.pollInterval);
   },
-
   render: function() {
     console.log(this.state.data)
     return (
       <div className="commentBox">
         <h1>Comments</h1>
         <CommentList data={this.state.data} />
-        <CommentForm onCommentSubmit={this.handleCommitSubmit} />
+        <CommentForm />
       </div>
       )
   }
@@ -102,8 +59,7 @@ var CommentForm = React.createClass({
       return;
     }
 
-    //send request to the server
-    this.props.onCommentSubmit({action: action, target: target});
+    //TODO: send request to the server
     this.refs.action.value = '';
     this.refs.target.value = '';
     return;
@@ -141,11 +97,6 @@ var Comment = React.createClass({
 
 
 ReactDOM.render(
-  <CommentBox url="http://lvlive.gstarcloud.com:50080/griver/api/actions/" pollInterval={2000}/>,
+  <CommentBox url="http://lvlive.gstarcloud.com:50080/griver/api/actions" pollInterval={2000}/>,
   document.getElementById('content')
 );
-
-
-    </script>
-  </body>
-</html>
